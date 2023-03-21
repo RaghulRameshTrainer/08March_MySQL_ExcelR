@@ -1,0 +1,97 @@
+DECLARE
+	<declaration>
+BEGIN
+	<Executable command>
+END;
+/
+
+INT  --> INTEGER , NUMBER
+VARCHAR   --> VARCHAR2
+
+DECLARE
+	msg VARCHAR2(100) := 'Welcome to ExcelR';
+BEGIN
+	DBMS_OUTPUT.PUT_LINE(msg);
+END;
+/
+-- CONDITIONAL STATEMENT (IF ELSE)
+
+DECLARE
+	x INTEGER := 100;
+BEGIN
+	IF(x > 0) THEN
+    	dbms_output.put_line('The value of x is greater than 0, x = ' || x);
+	END IF;
+END;
+/
+
+
+DECLARE
+	x INTEGER := -10;
+BEGIN
+	IF(x > 0) THEN
+    	dbms_output.put_line('The value of x is greater than 0, x = ' || x);
+	ELSE
+        dbms_output.put_line('The value of x is less than 0, x = ' || x);
+	END IF;
+END;
+/
+
+
+DECLARE
+	x INTEGER := -1;
+BEGIN
+	IF(x > 0 and x <=10) THEN
+    	dbms_output.put_line('TEN');
+	ELSIF(x>10 and x<=20) THEN
+        dbms_output.put_line('TWENTY');
+	ELSIF(x>20 and x<=30) THEN
+        dbms_output.put_line('THIRTY');
+	ELSE
+        dbms_output.put_line('ABOVE THIRTY');
+	END IF;
+END;
+/
+ -- LOOP
+
+DECLARE
+	x INTEGER := 1;
+BEGIN
+	LOOP
+		dbms_output.put_line(x);
+		x := x + 1;
+		IF x > 10 THEN
+            exit;
+		END IF;
+    END LOOP;
+END;
+/
+
+DECLARE
+	x INTEGER := 0;
+BEGIN
+	WHILE x <=100 LOOP
+		dbms_output.put_line(x);
+		x := x + 10;
+	END LOOP;
+END;
+/
+
+DECLARE
+	x INTEGER := 100;
+BEGIN
+	WHILE x >= 90 LOOP
+		dbms_output.put_line(x);
+		x := x - 1;
+	END LOOP;
+END;
+/
+    
+DECLARE
+	x INTEGER;
+BEGIN
+	FOR x in 1 .. 20 LOOP
+    	dbms_output.put_line(x);
+	END LOOP;
+END;
+/
