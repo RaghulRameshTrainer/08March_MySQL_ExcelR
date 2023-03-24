@@ -1,0 +1,198 @@
+-- FUNCTIONS
+-- FUNCTION IS SAME AS A PROCEDURE EXCEPT THAT IT *RETURNS* A VALUE
+
+CREATE TABLE mytable(
+emp_name VARCHAR(100),
+salary int
+);
+
+
+INSERT INTO mytable VALUES('Sridhar',20000);
+INSERT INTO mytable VALUES('Guna',15000);
+INSERT INTO mytable VALUES('Mohan',25000);
+
+CREATE OR REPLACE FUNCTION totalCustomer
+RETURN INTEGER IS
+    total INTEGER;
+BEGIN
+	SELECT COUNT(*) INTO total FROM mytable
+    WHERE salary = ( SELECT max(salary) FROM mytable);
+	
+	RETURN person;;
+	RETURN total;
+END;
+/
+
+DECLARE
+	tot INTEGER;
+BEGIN
+	tot := totalCustomer();
+	DBMS_OUTPUT.PUT_LINE('Total number of customers: ' || tot);
+END;
+/
+
+
+DECLARE
+	x INTEGER;
+	y INTEGER;
+	z INTEGER;
+	FUNCTION findMax(i IN INTEGER, j IN INTEGER)
+	RETURN INTEGER IS
+		k INTEGER;
+	BEGIN
+		IF i > j THEN
+        	k := i;
+		ELSE
+            k := j;
+		END IF;
+
+		RETURN k;
+	END;
+	BEGIN
+		x := 1000;
+		y := 200;
+		z := findMax(x,y);
+		DBMS_OUTPUT.PUT_LINE('Maximum of ('||x||','||y||')'||' is : '||z);
+	END;
+	/
+
+
+CREATE OR REPLACE FUNCTION maxSalPerson
+RETURN VARCHAR IS
+	person VARCHAR2(100);
+BEGIN
+	SELECT emp_name INTO person 
+    FROM mytable
+    WHERE salary = ( SELECT max(salary) FROM mytable);
+
+	RETURN person;
+END;
+/
+
+DECLARE
+    e_name VARCHAR2(100);
+BEGIN
+	e_name := maxSalPerson();
+	DBMS_OUTPUT.PUT_LINE('Max salaried Employee is : '||e_name);
+END;
+/
+
+-- DIFFERENCE BETWEEN PROCEDURE AND FUCNTION
+
+-- PROCEDURE											FUCNTION
+-- Parameter : 
+-- 	IN , OUT, IN OUT								IN
+
+-- May or may not RETURN valaue						Must return a value
+
+-- Used for all logical operation						Used for aggregation operation
+
+-- Cannot be used in SELECT query						CAN BE used SELECT query
+
+
+SELECT * FROM mytable;
+
+CREATE OR REPLACE FUNCTION appraisal(sal INTEGER)
+RETURN INTEGER IS
+	new_sal INTEGER;
+BEGIN
+	new_sal := sal * 1.1;
+	RETURN new_sal;
+END;
+/
+
+SELECT emp_name, salary, appraisal(salary) as revised_Salary FROM mytable;
+
+-- CURSOR
+
+-- Cursor is a pointer to a memory area.
+--     	Implicit Cursor - Created by default
+-- 		Explicit Cursor	- Manual creation
+
+DECLARE
+	e_name mytable.emp_name%type;
+	e_sal mytable.salary%type;
+	CURSOR c_employee IS
+		SELECT emp_name , salary FROM mytable;
+BEGIN
+	OPEN c_employee;
+	LOOP
+		FETCH c_employee INTO e_name,e_sal;
+		EXIT WHEN c_employee%notfound;
+		DBMS_OUTPUT.PUT_LINE('Emp Name : ' || e_name || ', Emp Salary : '|| e_sal);
+	END LOOP;
+	CLOSE c_employee;
+END;
+/
+
+
+
+
+-- TRIIGER
+
+
+CREATE TABLE employee(
+    emp_id INTEGER,
+    emp_name VARCHAR2(100),
+    gender CHAR(1),
+    SALARY INT,
+    CITY VARCHAR2(100)
+    );
+
+
+INSERT INTO employee VALUES(1,'Ramesh','M',100000,'Chennai');
+
+INSERT INTO employee VALUES(2,'Raghul','M',300000,'Bangalore');
+INSERT INTO employee VALUES(3,'Malini','F',500000,'Hyderabad');
+INSERT INTO employee VALUES(4,'Ashwin','M',200000,'Chennai');
+INSERT INTO employee VALUES(5,'Tharani','F',600000,'Pune');
+
+
+SELECT * FROM employee;
+
+-- BEFORE | AFTER | INSTEAD OF
+-- INESERT| UPDATE | DELETE
+
+
+
+CREATE TABLE alumni(
+    emp_id INTEGER,
+    emp_name VARCHAR2(100),
+    gender CHAR(1),
+    SALARY INT,
+    CITY VARCHAR2(100)
+    );
+
+SELECT * FROM alumni;
+
+CREATE OR REPLACE TRIGGER emp_resignation
+BEFORE DELETE ON employee
+FOR EACH ROW
+BEGIN
+	INSERT INTO ALUMNI VALUES(:OLD.emp_id, :OLD.emp_name, :OLD.gender, :OLD.salary, :OLD.city);
+	DBMS_OUTPUT.PUT_LINE(:OLD.emp_name || ' records are loaded into alumni table');
+END;
+/
+
+SELECT * FROM employee;
+SELECT * FROM alumni;
+
+
+DELETE FROM employee WHERE emp_id=4;
+DELETE FROM employee WHERE emp_id>=3;
+
+
+
+CREATE OR REPLACE TRIGGER emp_joining
+BEFORE INSERT ON employee
+FOR EACH ROW
+BEGIN
+	INSERT INTO ALUMNI VALUES(:NEW.emp_id, :NEW.emp_name, :NEW.gender, :NEW.salary, :NEW.city);
+	DBMS_OUTPUT.PUT_LINE(:NEW.emp_name || ' records are loaded into alumni table');
+END;
+/
+
+SELECT * FROM employee;
+INSERT INTO employee VALUES(6,'Shivani','F',1000000,'Trichy');
+
+SELECT * FROM alumni;
